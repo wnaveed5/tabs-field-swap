@@ -1,4 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Drag & Drop Form Builder with AI Image Analysis
+
+A Next.js application that allows users to create dynamic forms with drag-and-drop functionality and AI-powered image analysis to automatically detect and create form tabs.
+
+## Features
+
+- 🎯 **Drag & Drop Interface** - Built with DnD Kit for smooth field reordering
+- 🤖 **AI Image Analysis** - Upload images to automatically detect form tabs using OpenAI Vision
+- 💾 **Save Functionality** - Export form data to JSON files and localStorage
+- 📱 **Responsive Design** - Modern UI with shadcn/ui components
+- 🔄 **Dynamic Tab Creation** - Automatically create tabs from uploaded images
+
+## Environment Setup
+
+Before running the application, you need to set up your environment variables:
+
+1. Copy the example environment file:
+   ```bash
+   cp .env.example .env.local
+   ```
+
+2. Add your OpenAI API key to `.env.local`:
+   ```
+   OPENAI_API_KEY=your_openai_api_key_here
+   ```
+
+3. Get your API key from [OpenAI Platform](https://platform.openai.com/api-keys)
 
 ## Getting Started
 
