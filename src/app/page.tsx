@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/tabs"
 import { useFieldStore } from "@/lib/store"
 
-export function TabsDemo() {
+function TabsDemo() {
   const { name, username, setName, setUsername, swapFields } = useFieldStore()
 
   return (
