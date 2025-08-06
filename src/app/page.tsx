@@ -1,5 +1,7 @@
 'use client'
 
+import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core'
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -18,9 +20,20 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import { useFieldStore } from "@/lib/store"
+import { DraggableField } from "@/components/DraggableField"
 
 function TabsDemo() {
-  const { name, username, setName, setUsername, swapFields } = useFieldStore()
+  const { fields, setFieldValue, swapFields, reorderFields } = useFieldStore()
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    
+    if (over && active.id !== over.id) {
+      const oldIndex = fields.findIndex(field => field.id === active.id)
+      const newIndex = fields.findIndex(field => field.id === over.id)
+      reorderFields(oldIndex, newIndex)
+    }
+  }
 
   return (
     <div className="flex w-full max-w-sm flex-col gap-6">
@@ -39,22 +52,28 @@ function TabsDemo() {
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-6">
-              <div className="grid gap-3">
-                <Label htmlFor="tabs-demo-name">Name</Label>
-                <Input 
-                  id="tabs-demo-name" 
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              <div className="grid gap-3">
-                <Label htmlFor="tabs-demo-username">Username</Label>
-                <Input 
-                  id="tabs-demo-username" 
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-              </div>
+              <DndContext
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext
+                  items={fields.map(field => field.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <div className="space-y-3">
+                    {fields.map((field) => (
+                      <DraggableField
+                        key={field.id}
+                        id={field.id}
+                        label={field.label}
+                        value={field.value}
+                        type={field.type}
+                        onChange={(value) => setFieldValue(field.id, value)}
+                      />
+                    ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
               <Button onClick={swapFields} variant="outline">
                 Swap Fields
               </Button>
