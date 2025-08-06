@@ -146,7 +146,7 @@ function TabsDemo() {
     fromTab?: string
     toTab?: string
     timestamp: number
-    details: any
+    details: Record<string, unknown>
   }>>([])
   const [updateHighlights, setUpdateHighlights] = useState({
     uiState: false,
