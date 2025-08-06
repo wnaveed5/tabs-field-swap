@@ -5,16 +5,23 @@ import { CSS } from '@dnd-kit/utilities'
 import { GripVertical } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useState, useEffect } from 'react'
 
-interface DraggableFieldProps {
+interface Field {
   id: string
   label: string
   value: string
   type: string
+  tabId: string
+}
+
+interface DraggableFieldProps {
+  field: Field
   onChange: (value: string) => void
 }
 
-export function DraggableField({ id, label, value, type, onChange }: DraggableFieldProps) {
+// Client-side only wrapper for the draggable field
+function DraggableFieldContent({ field, onChange }: DraggableFieldProps) {
   const {
     attributes,
     listeners,
@@ -22,7 +29,7 @@ export function DraggableField({ id, label, value, type, onChange }: DraggableFi
     transform,
     transition,
     isDragging,
-  } = useSortable({ id })
+  } = useSortable({ id: field.id })
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -44,14 +51,44 @@ export function DraggableField({ id, label, value, type, onChange }: DraggableFi
         <GripVertical className="h-4 w-4 text-muted-foreground" />
       </div>
       <div className="flex-1 grid gap-3">
-        <Label htmlFor={id}>{label}</Label>
+        <Label htmlFor={field.id}>{field.label}</Label>
         <Input 
-          id={id} 
-          value={value}
+          id={field.id} 
+          value={field.value}
           onChange={(e) => onChange(e.target.value)}
-          type={type}
+          type={field.type}
         />
       </div>
     </div>
   )
+}
+
+export function DraggableField({ field, onChange }: DraggableFieldProps) {
+  const [hasMounted, setHasMounted] = useState(false)
+
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
+
+  if (!hasMounted) {
+    // Render a static version during SSR
+    return (
+      <div className="flex items-center gap-3 p-3 border rounded-lg bg-background">
+        <div className="cursor-grab p-1">
+          <GripVertical className="h-4 w-4 text-muted-foreground" />
+        </div>
+        <div className="flex-1 grid gap-3">
+          <Label htmlFor={field.id}>{field.label}</Label>
+          <Input 
+            id={field.id} 
+            value={field.value}
+            onChange={(e) => onChange(e.target.value)}
+            type={field.type}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  return <DraggableFieldContent field={field} onChange={onChange} />
 } 
