@@ -1,6 +1,6 @@
 'use client'
 
-import { DndContext, DragEndEvent, closestCenter, DragOverEvent, MouseSensor, TouchSensor, useSensor, useSensors, DragOverlay, useDroppable, pointerWithin } from '@dnd-kit/core'
+import { DndContext, DragEndEvent, DragOverEvent, MouseSensor, TouchSensor, useSensor, useSensors, DragOverlay, useDroppable, pointerWithin } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { Button } from "@/components/ui/button"
 import {
@@ -112,7 +112,7 @@ function DroppableTabTrigger({
   )
 }
 
-function DragOverlayField({ field }: { field: any }) {
+function DragOverlayField({ field }: { field: { id: string; label: string; value: string; type: string; tabId: string } }) {
   return (
     <div className="flex items-center gap-3 p-3 border rounded-lg bg-background shadow-lg opacity-90 scale-105">
       <div className="cursor-grabbing p-1">
@@ -164,7 +164,7 @@ function TabsDemo() {
     setHasMounted(true)
   }, [])
 
-  const logDragAction = (action: 'drag_start' | 'drag_over' | 'drag_end', details: any) => {
+  const logDragAction = (action: 'drag_start' | 'drag_over' | 'drag_end', details: Record<string, unknown>) => {
     const dragAction = {
       id: Math.random().toString(36).substr(2, 9),
       action,
@@ -392,8 +392,8 @@ function TabsDemo() {
     }
   }, [tabs])
 
-  // Get all field IDs for the single SortableContext
-  const allFieldIds = tabs.flatMap(tab => tab.fields.map(field => field.id))
+  // Get all field IDs for the single SortableContext (unused but kept for future use)
+  // const allFieldIds = tabs.flatMap(tab => tab.fields.map(field => field.id))
   
   // Find the active field for the drag overlay
   const activeField = tabs.flatMap(tab => tab.fields).find(field => field.id === activeId)
@@ -434,7 +434,7 @@ function TabsDemo() {
       >
         {/* Separate Tab Buttons */}
         <div className="flex gap-8 relative z-10 mb-4 flex-wrap">
-          {tabs.map((tab, index) => (
+          {tabs.map((tab) => (
             <DroppableTabTrigger 
               key={tab.id}
               value={tab.id}

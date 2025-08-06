@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
     let tabHeaders = []
     try {
       tabHeaders = JSON.parse(analysis)
-    } catch (error) {
+    } catch {
       console.log('Failed to parse JSON, extracting from text:', analysis)
       // If parsing fails, try to extract tab names from text
       const text = analysis.toLowerCase()
